@@ -5,12 +5,24 @@ from utils.visualization import plot_losses, plot_decision_boundary
 from experiments.train_and_evaluate import train_and_evaluate
 from sklearn.model_selection import train_test_split
 
+
 def load_real_data(filepath):
+    """
+    Laddar riktig data från en CSV-fil.
+
+    Args:
+        filepath (str): Sökväg till CSV-filen med riktig data.
+
+    Returns:
+        numpy.ndarray: Egenskaper (X).
+        numpy.ndarray: Mål/etiketter (y).
+    """
     import pandas as pd
     data = pd.read_csv(filepath)
-    X = data.drop('target_column', axis=1).values
+    X = data.drop('target_column', axis=1).values  # Byt 'target_column' mot namnet på din målkolumn
     y = data['target_column'].values
     return X, y
+
 
 def main():
     # Konfiguration
@@ -29,6 +41,7 @@ def main():
         # Lägg till fler konfigurationsparametrar vid behov
     }
 
+    # Välj datagenereringsmetod baserat på konfiguration
     if config["use_synthetic_data"]:
         X, y = generate_binary_classification_data(
             n_samples=config["n_samples"], 
@@ -52,10 +65,11 @@ def main():
     # Visualisera förlust och noggrannhet över tiden
     plot_losses(losses)
     plot_accuracy(accuracies)  # Antag att denna funktion finns i visualization.py
+    plot_decision_boundary(model, X_test, y_test)  # Notera: Funktionen kan behöva anpassas för din modells predict-metod
 
     # Plotta beslutsgränsen om datan är 2D
     if config["n_features"] == 2:
-        plot_decision_boundary(model, X, y)
+        plot_decision_boundary(model, X_test, y_test)
 
 if __name__ == '__main__':
     main()
