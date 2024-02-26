@@ -1,25 +1,19 @@
 import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
 from data.generate_data import generate_binary_classification_data
 from models.neural_network import NeuralNetwork
 from utils.visualization import plot_losses, plot_decision_boundary
 from experiments.train_and_evaluate import train_and_evaluate
-from sklearn.model_selection import train_test_split
 
 
 def load_real_data(filepath):
     """
-    Laddar riktig data från en CSV-fil.
-
-    Args:
-        filepath (str): Sökväg till CSV-filen med riktig data.
-
-    Returns:
-        numpy.ndarray: Egenskaper (X).
-        numpy.ndarray: Mål/etiketter (y).
+    Laddar riktig data från en angiven CSV-fil.
     """
-    import pandas as pd
     data = pd.read_csv(filepath)
-    X = data.drop('target_column', axis=1).values  # Byt 'target_column' mot namnet på din målkolumn
+    X = data.drop('target_column', axis=1).values  # Byt ut 'target_column' mot den faktiska målkolumnen.
     y = data['target_column'].values
     return X, y
 
@@ -51,23 +45,21 @@ def main():
     else:
         X, y = load_real_data(config["filepath"])
     
-    # Dela upp data i tränings- och testset
+    # Dela upp data i tränings- och testset.
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=config["test_size"], random_state=config["random_state"])
-    
 
-    # Generera syntetisk data
-    X, y = generate_binary_classification_data(n_samples=config["n_samples"], n_features=config["n_features"], n_classes=config["n_classes"], random_state=config["random_state"])
+    # Instansiera och konfigurera neurala nätverksmodellen.
     model = NeuralNetwork(config["layer_sizes"], learning_rate=config["learning_rate"])
 
-    # Träna och utvärdera modellen
-    losses, accuracies = train_and_evaluate(model, X, y, epochs=config["epochs"], test_size=config["test_size"])
+    # Träna och utvärdera modellen.
+    losses, accuracies = train_and_evaluate(model, X_train, y_train, X_test, y_test, epochs=config["epochs"])
 
-    # Visualisera förlust och noggrannhet över tiden
+    # Visualisera förlust och noggrannhet över tiden.
     plot_losses(losses)
-    plot_accuracy(accuracies)  # Antag att denna funktion finns i visualization.py
-    plot_decision_boundary(model, X_test, y_test)  # Notera: Funktionen kan behöva anpassas för din modells predict-metod
+    # Observera: `plot_accuracy` funktionen antas finnas. Om inte, ersätt med relevant kod.
+    # plot_accuracy(accuracies)  # Ta bort eller ersätt denna rad beroende på dina `visualization`-verktyg.
 
-    # Plotta beslutsgränsen om datan är 2D
+    # Plotta beslutsgränsen om datan är 2D.
     if config["n_features"] == 2:
         plot_decision_boundary(model, X_test, y_test)
 
