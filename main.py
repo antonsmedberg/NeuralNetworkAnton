@@ -11,6 +11,15 @@ from experiments.train_and_evaluate import train_and_evaluate
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
+def validate_config(config):
+    required_keys = ["use_synthetic_data", "n_samples", "n_features", "n_classes", "random_state", "layer_sizes", "learning_rate", "epochs", "test_size"]
+    for key in required_keys:
+        if key not in config:
+            raise ValueError(f"Missing required config key: {key}")
+        # Lägg till fler specifika valideringar här
+
+
 def main():
     logging.info("Startar programmet...")
     try:
