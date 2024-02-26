@@ -5,7 +5,7 @@ import logging
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from data.generate_data import generate_binary_classification_data
+from data.generate_data import generate_binary_classification_data, generate_classification_data, generate_regression_data, plot_generated_data
 from models.neural_network import NeuralNetwork
 from utils.visualization import plot_losses, plot_decision_boundary
 from experiments.train_and_evaluate import train_and_evaluate
