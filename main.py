@@ -18,15 +18,24 @@ def load_real_data(filepath):
     """
     Laddar och förbereder riktig data från en angiven CSV-fil.
     """
-    logging.info("Laddar riktig data från {}".format(filepath))
-    data = pd.read_csv(filepath)
-    X = data.drop('target_column', axis=1)  # Byt ut 'target_column' mot den faktiska målkolumnen.
-    y = data['target_column']
+    try:
+        logging.info("Laddar riktig data från {}".format(filepath))
+        data = pd.read_csv(filepath)
+        X = data.drop('target_column', axis=1)  # Byt ut 'target_column' mot den faktiska målkolumnen.
+        y = data['target_column']
 
-    # Normalisera datan
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    return X_scaled, y.values
+        # Normalisera datan
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+        return X_scaled, y.values
+
+    except FileNotFoundError:
+        logging.error(f"Fil {filepath} hittades inte.")
+        exit()
+    except Exception as e:
+        logging.error(f"Ett fel uppstod vid laddning av data: {e}")
+        exit()
+
 
 
 def main():
