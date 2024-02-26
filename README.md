@@ -59,3 +59,7 @@ Projektet inkluderar en funktion plot_generated_data för att visualisera syntet
 ## Bidra till Projektet
 
 Alla bidrag till projektet uppmuntras och uppskattas. För att bidra, följ de vanliga procedurerna för att skapa en pull-förfrågan eller öppna en issue för diskussion kring större förändringar eller förbättringar.
+
+## Licens
+
+Detta projekt är licensierat under MIT-licensen. Se [LICENSE](LICENSE) filen för mer information.

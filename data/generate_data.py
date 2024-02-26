@@ -1,30 +1,28 @@
+# generate_data.py
+
 from sklearn.datasets import make_classification, make_regression
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
-def load_real_data(filepath, target_column='target'):
+def load_real_data(filepath, target_column=None):
     """
     Laddar och förbereder riktig data från en angiven CSV-fil.
-
-    Args:
-        filepath (str): Sökvägen till CSV-filen som innehåller datan.
-        target_column (str): Namnet på kolumnen som innehåller målvärdet.
-
-    Returns:
-        X (numpy.ndarray): Förklarande variabler (funktioner) i datan.
-        y (numpy.ndarray): Målvärdet (etiketter) i datan.
+    Om target_column inte anges, antas den sista kolumnen vara målkolumnen.
     """
     data = pd.read_csv(filepath)
-    X = data.drop(target_column, axis=1).values
-    y = data[target_column].values
+    if target_column is None:
+        target_column = data.columns[-1]
+    X = data.drop(target_column, axis=1)
+    y = data[target_column]
 
-    # Normalisera datan
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    return X_scaled, y
+    return X_scaled, y.values
+
 
 def generate_synthetic_data(type='classification', n_samples=1000, n_features=20, **kwargs):
     """
@@ -47,26 +45,31 @@ def generate_synthetic_data(type='classification', n_samples=1000, n_features=20
     else:
         raise ValueError("Ogiltig typ specifierad. Använd 'classification' eller 'regression'.")
 
-def plot_generated_data(X, y):
-    """
-    Visualiserar genererad data.
 
-    Args:
-        X (numpy.ndarray): Datamatris.
-        y (numpy.ndarray): Etikettvektor.
+def plot_generated_data(X, y, plot_type='classification'):
+    """
+    Förbättra funktionen för att stödja både klassificerings- och regressionsdata.
     """
     plt.figure(figsize=(8, 6))
-    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=20, edgecolor='k')
+    if plot_type == 'classification':
+        plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.coolwarm, s=20, edgecolor='k')
+    elif plot_type == 'regression':
+        plt.scatter(X[:, 0], y, color='blue', s=20, edgecolor='k')
     plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
+    plt.ylabel('Feature 2' if plot_type == 'classification' else 'Target')
     plt.title('Generated Data Visualization')
     plt.show()
 
-# Exempel på användning
-if __name__ == "__main__":
-    # Exempel på hur man genererar och visualiserar syntetisk klassificeringsdata
-    X_class, y_class = generate_synthetic_data(type='classification', n_samples=1000, n_features=2, n_classes=2, random_state=42)
-    plot_generated_data(X_class, y_class)
+def split_data(X, y, test_size=0.2, random_state=None):
+    """
+    Delar datan i tränings- och testset.
+    """
+    return train_test_split(X, y, test_size=test_size, random_state=random_state)
 
-    # Exempel på hur man laddar och förbereder riktig data
-    # X_real, y_real = load_real_data('path/to/your/data.csv', target_column='your_target_column')
+# Användningsexempel
+if __name__ == "__main__":
+    X, y = generate_synthetic_data('classification', 1000, 2, 2)
+    plot_generated_data(X, y, 'classification')
+    # För riktig data
+    X_real, y_real = load_real_data('path/to/your/data.csv')
+    X_train, X_test, y_train, y_test = split_data(X_real, y_real, test_size=0.25)
