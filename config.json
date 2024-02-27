@@ -1,15 +1,34 @@
-
 {
-    "use_synthetic_data": true,
-    "filepath": "path/to/your/real/data.csv",
-    "layer_sizes": [2, 4, 4, 1],
-    "epochs": 1000,
-    "learning_rate": 0.001,
-    "test_size": 0.2,
-    "n_samples": 1000,
-    "n_features": 2,
-    "n_classes": 2,
-    "random_state": 42,
-    "data_type": "image",
-    "task_type": "classification",
+    "use_synthetic_data": true,  // Anger om syntetiska data ska genereras istället för att använda riktig data
+    "filepath": "path/to/your/real/data.csv",  // Sökväg till filen med riktig data om inte syntetiska data används
+    "layer_sizes": [2, 4, 4, 1],  // Definierar storleken på varje lager i det neurala nätverket
+    "epochs": 1000,  // Antal träningscykler
+    "learning_rate": 0.001,  // Hastigheten på modellens inlärning
+    "test_size": 0.2,  // Andelen av data som ska användas för testning
+    "n_samples": 1000,  // Antal prover att generera om syntetiska data används
+    "n_features": 2,  // Antal funktioner i datamängden
+    "n_classes": 2,  // Antal klasser för klassificeringsuppgifter
+    "random_state": 42,  // Säkerställer reproducerbarhet
+    "data_type": "image",  // Typ av data som ska behandlas ('image' eller 'text')
+    "task_type": "classification",  // Typ av ML-uppgift ('classification' eller 'regression')
+    "scaler_type": "standard",  // Typ av skalning som ska tillämpas på datan ('standard' eller 'minmax')
+    "batch_size": 32,  // Storleken på varje batch under träningen
+    "validation_split": 0.1,  // Andelen av träningsdata som ska användas för validering
+    "logging_level": "INFO",  // Loggningsnivå för att kontrollera utdata från körningen
+
+    "early_stopping": {  // Konfiguration för tidigt stopp för att förhindra överanpassning
+        "enabled": true,
+        "patience": 10  // Antal epoker att vänta på förbättring innan träningen stoppas
+    },
+
+    "data_augmentation": {  // Inställningar för dataaugmentering, speciellt användbart för bilddata
+        "flip": true,  // Tillämpar horisontell flipping
+        "rotate": 15  // Rotera bilder med upp till 15 grader
+    },
+
+    "preprocessing": {  // Specifika förberedelsesteg baserade på datatyp
+        "text": ["lowercase", "remove_stopwords"],  // Textbearbetningssteg
+        "image": ["resize", "normalize"]  // Bildbearbetningssteg
+    }
 }
+
